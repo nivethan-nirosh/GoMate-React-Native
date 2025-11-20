@@ -69,64 +69,69 @@ export default function TripHistoryScreen() {
         </View>
     );
 
-    const renderTrip = ({ item, index }) => (
-        <View style={styles.tripContainer}>
-            {/* Timeline connector */}
-            {index !== filteredTrips.length - 1 && <View style={[styles.timelineConnector, { backgroundColor: COLORS.input }]} />}
+    const renderTrip = ({ item, index }) => {
+        // Dynamic color based on transport type - orange for trains, pink for buses
+        const dotColor = item.type === 'Train' ? '#FF9500' : '#FF2D55';
 
-            <View style={styles.tripCard}>
-                {/* Timeline dot */}
-                <View style={[styles.timelineDot, { backgroundColor: COLORS.primary }]}>
-                    <Feather
-                        name={item.type === 'Train' ? 'anchor' : 'truck'}
-                        size={14}
-                        color="white"
-                    />
-                </View>
+        return (
+            <View style={styles.tripContainer}>
+                {/* Timeline connector */}
+                {index !== filteredTrips.length - 1 && <View style={[styles.timelineConnector, { backgroundColor: COLORS.input }]} />}
 
-                {/* Trip content */}
-                <View style={[styles.tripContent, { backgroundColor: COLORS.card }]}>
-                    <View style={styles.tripHeader}>
-                        <View style={{ flex: 1 }}>
-                            <Text style={[styles.tripTitle, { color: COLORS.text }]} numberOfLines={1}>
-                                {item.name || item.title}
-                            </Text>
-                            <Text style={[styles.tripDate, { color: COLORS.subText }]}>
-                                {item.date} • {item.time || item.departure || 'Anytime'}
-                            </Text>
-                        </View>
-                        <TouchableOpacity
-                            style={styles.deleteBtn}
-                            onPress={() => handleDelete(item.id)}
-                        >
-                            <Feather name="trash-2" size={18} color={COLORS.danger} />
-                        </TouchableOpacity>
+                <View style={styles.tripCard}>
+                    {/* Timeline dot with dynamic color */}
+                    <View style={[styles.timelineDot, { backgroundColor: dotColor }]}>
+                        <Feather
+                            name={item.type === 'Train' ? 'anchor' : 'truck'}
+                            size={14}
+                            color="white"
+                        />
                     </View>
 
-                    <View style={styles.tripDetails}>
-                        <View style={styles.tripDetailRow}>
-                            <Feather name="users" size={14} color={COLORS.subText} />
-                            <Text style={[styles.tripDetailText, { color: COLORS.subText }]}>
-                                {item.passengers || 1} passenger{(item.passengers || 1) > 1 ? 's' : ''}
-                            </Text>
+                    {/* Trip content */}
+                    <View style={[styles.tripContent, { backgroundColor: COLORS.card }]}>
+                        <View style={styles.tripHeader}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={[styles.tripTitle, { color: COLORS.text }]} numberOfLines={1}>
+                                    {item.name || item.title}
+                                </Text>
+                                <Text style={[styles.tripDate, { color: COLORS.subText }]}>
+                                    {item.date} • {item.time || item.departure || 'Anytime'}
+                                </Text>
+                            </View>
+                            <TouchableOpacity
+                                style={styles.deleteBtn}
+                                onPress={() => handleDelete(item.id)}
+                            >
+                                <Feather name="trash-2" size={18} color={COLORS.danger} />
+                            </TouchableOpacity>
                         </View>
-                        <View style={styles.tripDetailRow}>
-                            <Feather name="credit-card" size={14} color={COLORS.subText} />
-                            <Text style={[styles.tripDetailText, { color: COLORS.primary }]}>
-                                Rs. {(item.totalPrice || item.price || 0).toLocaleString()}
-                            </Text>
-                        </View>
-                    </View>
 
-                    {item.ticketId && (
-                        <Text style={[styles.ticketId, { color: COLORS.subText }]}>
-                            Ticket #{item.ticketId}
-                        </Text>
-                    )}
+                        <View style={styles.tripDetails}>
+                            <View style={styles.tripDetailRow}>
+                                <Feather name="users" size={14} color={COLORS.subText} />
+                                <Text style={[styles.tripDetailText, { color: COLORS.subText }]}>
+                                    {item.passengers || 1} passenger{(item.passengers || 1) > 1 ? 's' : ''}
+                                </Text>
+                            </View>
+                            <View style={styles.tripDetailRow}>
+                                <Feather name="credit-card" size={14} color={COLORS.subText} />
+                                <Text style={[styles.tripDetailText, { color: COLORS.primary }]}>
+                                    Rs. {(item.totalPrice || item.price || 0).toLocaleString()}
+                                </Text>
+                            </View>
+                        </View>
+
+                        {item.ticketId && (
+                            <Text style={[styles.ticketId, { color: COLORS.subText }]}>
+                                Ticket #{item.ticketId}
+                            </Text>
+                        )}
+                    </View>
                 </View>
             </View>
-        </View>
-    );
+        );
+    };
 
     return (
         <View style={[styles.container, { paddingTop: insets.top, backgroundColor: COLORS.background }]}>
