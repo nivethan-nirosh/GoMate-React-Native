@@ -4,7 +4,9 @@ import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacit
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTheme, SHADOWS } from '../constants/theme';
-import { bookTicket, toggleFavorite } from '../redux/store';
+import { addTripToHistory, bookTicket, toggleFavorite } from '../redux/store';
+import { scheduleBookingReminder, sendBookingConfirmation } from '../services/notifications';
+import { saveTripHistory } from '../services/storage';
 
 const { height } = Dimensions.get('window');
 
@@ -20,28 +22,43 @@ export default function DetailsScreen({ route, navigation }) {
   const [passengers, setPassengers] = useState(1);
   const totalPrice = item.price * passengers;
 
-  const handleBook = () => {
+  const handleBook = async () => {
     const ticketData = {
       ...item,
       ticketId: Math.floor(Math.random() * 10000) + 1000,
       passengers,
       totalPrice,
-      date: new Date().toLocaleDateString()
+      date: new Date().toLocaleDateString(),
+      id: Date.now() // Unique ID for history
     };
 
-    // 1. Dispatch to Redux Store
+    // 1. Dispatch to Redux Store (Wallet)
     dispatch(bookTicket(ticketData));
 
-    // 2. Success Alert with Navigation
+    // 2. Save to Trip History
+    dispatch(addTripToHistory(ticketData));
+    await saveTripHistory(ticketData);
+
+    // 3. Send booking confirmation notification
+    await sendBookingConfirmation(ticketData);
+
+    // 4. Schedule trip reminder (2 hours before - for demo, this is 2 hours from now)
+    await scheduleBookingReminder(ticketData, 2);
+
+    // 5. Success Alert with Navigation
     Alert.alert(
       "Booking Successful! 🎟️",
-      `Your trip to ${item.name || item.title} has been added to your wallet.`,
+      `Your trip to ${item.name || item.title} has been booked!\n\n✅ Added to Wallet\n✅ Saved to History\n✅ Reminder scheduled`,
       [
         {
-          text: "Go to Wallet",
-          onPress: () => navigation.navigate('Wallet') // Navigate to Tab
+          text: "View Wallet",
+          onPress: () => navigation.navigate('Wallet')
         },
-        { text: "Stay Here", style: 'cancel' }
+        {
+          text: "View History",
+          onPress: () => navigation.navigate('History')
+        },
+        { text: "OK", style: 'cancel' }
       ]
     );
   };

@@ -7,12 +7,12 @@ import { getTheme, SHADOWS } from '../constants/theme';
 
 // Import Screens (Keep your existing imports)
 import DetailsScreen from '../screens/DetailsScreen';
-import FavoritesScreen from '../screens/FavoritesScreen';
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ScheduleScreen from '../screens/ScheduleScreen';
 import TicketsScreen from '../screens/TicketsScreen';
+import TripHistoryScreen from '../screens/TripHistoryScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,7 +47,7 @@ function AppTabs() {
         if (route.name === 'Explore') iconName = 'compass';
         else if (route.name === 'Schedule') iconName = 'calendar';
         else if (route.name === 'Wallet') iconName = 'credit-card';
-        else if (route.name === 'Favorites') iconName = 'heart';
+        else if (route.name === 'History') iconName = 'clock';
         else if (route.name === 'Profile') iconName = 'user';
 
         // iOS Touch: Fill icon when active
@@ -75,7 +75,7 @@ function AppTabs() {
       <Tab.Screen name="Explore" component={HomeStack} />
       <Tab.Screen name="Schedule" component={ScheduleScreen} />
       <Tab.Screen name="Wallet" component={TicketsScreen} />
-      <Tab.Screen name="Favorites" component={FavoritesScreen} />
+      <Tab.Screen name="History" component={TripHistoryScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

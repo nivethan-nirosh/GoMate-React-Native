@@ -1,6 +1,7 @@
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider, useSelector } from 'react-redux';
+import OfflineIndicator from './src/components/OfflineIndicator';
 import AppNavigator from './src/navigation/AppNavigator';
 import { store } from './src/redux/store';
 
@@ -13,6 +14,7 @@ function AppContent() {
         barStyle={isDark ? 'light-content' : 'dark-content'}
         backgroundColor={isDark ? '#000000' : '#F2F2F7'}
       />
+      <OfflineIndicator />
       <AppNavigator />
     </>
   );
